@@ -1,0 +1,13 @@
+celery
+Django
+django-cache
+django-celery-beat
+django-redis
+django-timezone-field
+djangorestframework
+python-crontab
+redis
+requests
+Pillow
+psycopg2-binary
+paramiko
