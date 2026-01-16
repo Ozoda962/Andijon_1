@@ -1,0 +1,62 @@
+{% comment %}
+Unfold bo'lsa:
+  {% extends "unfold/admin/base_site.html" %}
+Ishlamasa:
+  {% extends "admin/base_site.html" %}
+{% endcomment %}
+
+{% extends "unfold/admin/base_site.html" %}
+
+{% load i18n %}
+
+{% block content %}
+  <div class="module">
+    <h1 style="margin-bottom: 10px;">{{ title }}</h1>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <fieldset class="module aligned">
+
+        <div class="form-row">
+          <div>
+            <label for="id_direction">{% trans "Direction" %}:</label>
+            {{ form.direction }}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label for="id_datchik">{% trans "Datchik" %}:</label>
+            {{ form.datchik }}
+            <p class="help" style="margin-top:6px;">
+              {% trans "Avval Direction tanlang, keyin Datchik ro‘yxati chiqadi." %}
+            </p>
+          </div>
+        </div>
+
+      </fieldset>
+
+      <div class="submit-row">
+        <input type="submit" value="{% trans 'Continue' %}" class="default">
+        <a class="button cancel-link" href="../">{% trans "Cancel" %}</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Direction o'zgarsa -> shu sahifaga direction param bilan qayta yuklaydi
+    (function () {
+      const direction = document.getElementById("id_direction");
+      if (!direction) return;
+
+      direction.addEventListener("change", function () {
+        const val = this.value || "";
+        const url = new URL(window.location.href);
+        if (val) url.searchParams.set("direction", val);
+        else url.searchParams.delete("direction");
+        window.location.href = url.toString();
+      });
+    })();
+  </script>
+{% endblock %}

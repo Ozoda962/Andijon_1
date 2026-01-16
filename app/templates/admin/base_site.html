@@ -1,0 +1,31 @@
+{% extends "unfold/layouts/base.html" %}
+{% load i18n %}
+
+{% block topbar_right %}
+  {{ block.super }}
+
+  <form action="{% url 'set_language' %}" method="post" style="margin-left:12px;">
+    {% csrf_token %}
+    {% get_current_language as LANGUAGE_CODE %}
+    {% get_available_languages as LANGUAGES %}
+    <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+
+    <select
+      name="language"
+      onchange="this.form.submit()"
+      style="
+        background:#1f2937;
+        color:white;
+        border:1px solid #374151;
+        border-radius:6px;
+        padding:4px 8px;
+      "
+    >
+      {% for lang in LANGUAGES %}
+        <option value="{{ lang.0 }}" {% if lang.0 == LANGUAGE_CODE %}selected{% endif %}>
+          {{ lang.1 }}
+        </option>
+      {% endfor %}
+    </select>
+  </form>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1 style="margin-bottom:10px">{{ title }}</h1>
+
+<form method="get" style="display:flex; gap:10px; flex-wrap:wrap; align-items:end; margin-bottom:12px">
+  <div>
+    <label>From</label><br>
+    <input type="date" name="from" value="{{ date_from }}">
+  </div>
+
+  <div>
+    <label>To</label><br>
+    <input type="date" name="to" value="{{ date_to }}">
+  </div>
+
+  <div>
+    <label>Period</label><br>
+    <select name="period">
+      <option value="raw"  {% if period == "raw" %}selected{% endif %}>Raw (har bir log)</option>
+      <option value="day"  {% if period == "day" %}selected{% endif %}>Kunma-kun</option>
+      <option value="month"{% if period == "month" %}selected{% endif %}>Oyma-oy</option>
+    </select>
+  </div>
+
+  <div>
+    <label>Aggregation</label><br>
+    <select name="agg">
+      <option value="avg" {% if agg == "avg" %}selected{% endif %}>O'rtacha (AVG)</option>
+      <option value="sum" {% if agg == "sum" %}selected{% endif %}>Yig'indi (SUM)</option>
+    </select>
+  </div>
+
+  <div>
+    <label>Chart</label><br>
+    <select id="chartTypeSelect">
+      <option value="line" {% if chart_type == "line" %}selected{% endif %}>Chiziqli</option>
+      <option value="bar"  {% if chart_type == "bar" %}selected{% endif %}>Ustunli</option>
+    </select>
+    <input type="hidden" name="chart" id="chartHidden" value="{{ chart_type }}">
+  </div>
+
+  <button class="button" type="submit">Ko‘rsatish</button>
+</form>
+
+<div style="background:#fff; border:1px solid #eee; border-radius:10px; padding:12px">
+  <canvas id="chartCanvas" height="100"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const sel = document.getElementById("chartTypeSelect");
+  const hid = document.getElementById("chartHidden");
+  sel.addEventListener("change", () => { hid.value = sel.value; });
+
+  const labels = {{ labels_json|safe }};
+  const datasets = {{ datasets_json|safe }};
+
+  new Chart(document.getElementById("chartCanvas"), {
+    type: "{{ chart_type|default:'line' }}",
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "admin/change_list.html" %}
+
+{% block object-tools %}
+  <ul class="object-tools" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+    <li style="display:flex; gap:8px; align-items:center;">
+      <label style="font-size:12px; opacity:.8;">From</label>
+      <input type="date" id="excelFrom" value="{{ request.GET.from|default:'' }}">
+    </li>
+
+    <li style="display:flex; gap:8px; align-items:center;">
+      <label style="font-size:12px; opacity:.8;">To</label>
+      <input type="date" id="excelTo" value="{{ request.GET.to|default:'' }}">
+    </li>
+
+    <li>
+      <a class="button" href="#" id="excelExportBtn">
+        📥 Excel
+      </a>
+    </li>
+
+    {# eski object-tools (Add button va boshqalar) #}
+    {{ block.super }}
+  </ul>
+
+  <script>
+    (function(){
+      const btn = document.getElementById("excelExportBtn");
+      const fromEl = document.getElementById("excelFrom");
+      const toEl = document.getElementById("excelTo");
+
+      // Sahifadagi hozirgi filterlarni saqlab qolamiz:
+      const baseParams = new URLSearchParams(window.location.search);
+
+      btn.addEventListener("click", function(e){
+        e.preventDefault();
+
+        // from/to ni qo‘shamiz (yoki o‘chiramiz)
+        if (fromEl.value) baseParams.set("from", fromEl.value);
+        else baseParams.delete("from");
+
+        if (toEl.value) baseParams.set("to", toEl.value);
+        else baseParams.delete("to");
+
+        // export url
+        const url = "export-excel/?" + baseParams.toString();
+        window.location.href = url;
+      });
+    })();
+  </script>
+{% endblock %}
